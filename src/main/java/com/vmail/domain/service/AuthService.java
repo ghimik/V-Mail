@@ -1,19 +1,16 @@
 package com.vmail.domain.service;
 
 
-import com.vmail.domain.dto.request.AuthenticationResponse;
+import com.vmail.domain.dto.response.AuthenticationResponse;
 import com.vmail.domain.dto.request.AuthorizationRequestDto;
 import com.vmail.domain.dto.request.SignUpRequestDto;
 import com.vmail.domain.dto.request.TokenRequest;
 import com.vmail.domain.dto.response.AuthorizationResponse;
 import com.vmail.domain.model.User;
-import com.vmail.domain.repository.UserRepository;
 import io.jsonwebtoken.Claims;
 import jakarta.security.auth.message.AuthException;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -45,13 +42,12 @@ public class AuthService {
     }
 
     public AuthorizationResponse signup(SignUpRequestDto requestDto) {
-        User user = User
-                .builder()
-                .username(requestDto.getUsername())
-                .email(requestDto.getEmail())
-                .password(requestDto.getPassword())
-                .role(User.ROLE_USER)
-                .build();
+        User user = new User();
+
+        user.setUsername(requestDto.getUsername());
+        user.setEmail(requestDto.getEmail());
+        user.setPassword(passwordEncoder.encode(requestDto.getPassword()));
+        user.setRole(User.ROLE_USER);
 
         userService.saveUser(user);
         return new AuthorizationResponse(jwtService.generateToken(user));
@@ -59,7 +55,7 @@ public class AuthService {
     }
 
     public AuthenticationResponse refresh(TokenRequest tokenRequest) {
-        Claims claims = jwtService.validateToken(tokenRequest.getRefreshToken());
+        Claims claims = jwtService.validateToken(tokenRequest.getOldToken());
         String username = claims.getSubject();
 
         User userDetails = userService.loadUserByUsername(username);

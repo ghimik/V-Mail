@@ -1,4 +1,4 @@
-package com.vmail.domain.dto.request;
+package com.vmail.domain.dto.response;
 
 import lombok.Value;
 

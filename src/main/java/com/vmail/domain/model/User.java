@@ -11,8 +11,10 @@ import java.util.List;
 
 @Entity
 @Table(name = "users")
-@Data
-@Builder
+@AllArgsConstructor
+@NoArgsConstructor
+@Getter
+@Setter
 public class User implements UserDetails {
 
     public static final String ROLE_USER = "ROLE_USER";

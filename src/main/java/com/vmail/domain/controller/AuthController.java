@@ -1,6 +1,6 @@
 package com.vmail.domain.controller;
 
-import com.vmail.domain.dto.request.AuthenticationResponse;
+import com.vmail.domain.dto.response.AuthenticationResponse;
 import com.vmail.domain.dto.request.AuthorizationRequestDto;
 import com.vmail.domain.dto.request.SignUpRequestDto;
 import com.vmail.domain.dto.request.TokenRequest;
