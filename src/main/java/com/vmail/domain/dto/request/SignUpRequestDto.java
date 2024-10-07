@@ -11,5 +11,4 @@ public class SignUpRequestDto {
 
     String email;
 
-    String role;
 }
