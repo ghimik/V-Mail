@@ -28,7 +28,7 @@ import java.util.Objects;
 
 @Configuration
 @EnableWebSecurity
-public class SecurityConfig extends WebSecurityConfigurerAdapter {
+public class SecurityConfig {
 
     @Bean
     public PublicKey publicKey() {
@@ -72,18 +72,19 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Autowired
     private JwtAuthFilter jwtAuthFilter;
 
-    @Override
-    protected void configure(HttpSecurity http) throws Exception {
+    @Bean
+    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
-                .sessionManagement()
-                .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-                .and()
-                .cors().disable()
-                .csrf().disable()
-                .addFilterAfter(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class)
-                .authorizeRequests()
-                .antMatchers("/api/auth/login", "/api/auth/signup").permitAll()
-                .anyRequest().authenticated();
+            .sessionManagement()
+            .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+            .and()
+            .cors().disable()
+            .csrf().disable()
+            .addFilterAfter(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class)
+            .authorizeRequests()
+            .antMatchers("/api/auth/login", "/api/auth/signup").permitAll()
+            .anyRequest().authenticated();
+        return http.build();
     }
 
 }
