@@ -1,5 +1,6 @@
 package com.vmail.domain.util;
 
+import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.security.KeyFactory;
@@ -11,24 +12,32 @@ import java.util.Base64;
 
 public class KeyReader {
 
-    public static PrivateKey getPrivateKey(String filename) throws Exception {
-        byte[] keyBytes = Files.readAllBytes(Paths.get(filename));
+
+    public static PrivateKey getPrivateKey(InputStream inputStream) throws Exception {
+        byte[] keyBytes = inputStream.readAllBytes();
+        return generatePrivateKey(keyBytes);
+    }
+
+    public static PublicKey getPublicKey(InputStream inputStream) throws Exception {
+        byte[] keyBytes = inputStream.readAllBytes();
+        return generatePublicKey(keyBytes);
+    }
+
+    private static PrivateKey generatePrivateKey(byte[] keyBytes) throws Exception {
         keyBytes = Base64.getDecoder().decode(new String(keyBytes)
-                              .replaceAll("-----\\w+ PRIVATE KEY-----", "")
-                              .replaceAll("\\s", ""));
+                .replaceAll("-----\\w+ PRIVATE KEY-----", "")
+                .replaceAll("\\s", ""));
         PKCS8EncodedKeySpec spec = new PKCS8EncodedKeySpec(keyBytes);
         KeyFactory kf = KeyFactory.getInstance("RSA");
         return kf.generatePrivate(spec);
     }
 
-    public static PublicKey getPublicKey(String filename) throws Exception {
-        byte[] keyBytes = Files.readAllBytes(Paths.get(filename));
+    private static PublicKey generatePublicKey(byte[] keyBytes) throws Exception {
         keyBytes = Base64.getDecoder().decode(new String(keyBytes)
-                              .replaceAll("-----\\w+ PUBLIC KEY-----", "")
-                              .replaceAll("\\s", ""));
+                .replaceAll("-----\\w+ PUBLIC KEY-----", "")
+                .replaceAll("\\s", ""));
         X509EncodedKeySpec spec = new X509EncodedKeySpec(keyBytes);
         KeyFactory kf = KeyFactory.getInstance("RSA");
         return kf.generatePublic(spec);
     }
-
 }

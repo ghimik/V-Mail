@@ -6,6 +6,7 @@ import com.vmail.domain.security.jwt.JwtTokenVerifier;
 import io.jsonwebtoken.Claims;
 import lombok.extern.log4j.Log4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
@@ -17,9 +18,11 @@ public class JwtService {
 
 
     @Autowired
+    @Lazy
     private JwtTokenGenerator generator;
 
     @Autowired
+    @Lazy
     private JwtTokenVerifier verifier;
 
 

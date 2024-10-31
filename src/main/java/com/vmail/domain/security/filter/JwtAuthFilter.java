@@ -4,11 +4,6 @@ import com.vmail.domain.dto.response.AuthorizationResponse;
 import com.vmail.domain.security.jwt.JwtAuthentication;
 import com.vmail.domain.service.JwtService;
 import io.jsonwebtoken.Claims;
-import jakarta.servlet.FilterChain;
-import jakarta.servlet.ServletException;
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
-import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.security.core.Authentication;
@@ -17,6 +12,10 @@ import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 import org.springframework.web.filter.OncePerRequestFilter;
 
+import javax.servlet.FilterChain;
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.Optional;
 
@@ -28,10 +27,16 @@ public class JwtAuthFilter extends OncePerRequestFilter {
     @Autowired
     private JwtService jwtService;
 
+    private Optional<String> getTokenFromRequest(HttpServletRequest request) {
+        final String bearer = request.getHeader(AUTHORIZATION);
+        if (StringUtils.hasText(bearer) && bearer.startsWith(AuthorizationResponse.BEARER)) {
+            return Optional.of(bearer.substring(AuthorizationResponse.BEARER.length()));
+        }
+        return Optional.empty();
+    }
+
     @Override
-    protected void doFilterInternal(HttpServletRequest request,
-                                    HttpServletResponse response,
-                                    FilterChain filterChain) throws ServletException, IOException {
+    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         final Optional<String> token = getTokenFromRequest(request);
         if (token.isEmpty()) {
             System.out.println("Token is not present");
@@ -57,13 +62,5 @@ public class JwtAuthFilter extends OncePerRequestFilter {
         }
         filterChain.doFilter(request, response);
 
-    }
-
-    private Optional<String> getTokenFromRequest(HttpServletRequest request) {
-        final String bearer = request.getHeader(AUTHORIZATION);
-        if (StringUtils.hasText(bearer) && bearer.startsWith(AuthorizationResponse.BEARER)) {
-            return Optional.of(bearer.substring(AuthorizationResponse.BEARER.length()));
-        }
-        return Optional.empty();
     }
 }

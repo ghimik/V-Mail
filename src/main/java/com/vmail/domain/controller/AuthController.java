@@ -7,7 +7,7 @@ import com.vmail.domain.dto.request.TokenRequest;
 import com.vmail.domain.dto.response.AuthorizationResponse;
 import com.vmail.domain.service.AuthService;
 import com.vmail.domain.service.JwtService;
-import jakarta.security.auth.message.AuthException;
+import javax.security.auth.message.AuthException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -15,6 +15,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 @Controller
 @RequestMapping("/api/auth")
@@ -53,7 +54,6 @@ public class AuthController {
             return ResponseEntity.badRequest().build();
         }
     }
-
 
     @PostMapping("refresh")
     public ResponseEntity<AuthenticationResponse> refreshToken(@RequestBody TokenRequest tokenRequest) {
