@@ -5,6 +5,7 @@ import com.vmail.domain.dto.request.AuthorizationRequestDto;
 import com.vmail.domain.dto.request.SignUpRequestDto;
 import com.vmail.domain.dto.request.TokenRequest;
 import com.vmail.domain.dto.response.AuthorizationResponse;
+import com.vmail.domain.dto.response.SimpleResponse;
 import com.vmail.domain.service.AuthService;
 import com.vmail.domain.service.JwtService;
 import javax.security.auth.message.AuthException;
@@ -29,7 +30,7 @@ public class AuthController {
 
 
     @PostMapping("login")
-    public ResponseEntity<Void> login
+    public ResponseEntity<SimpleResponse> login
             (@RequestBody AuthorizationRequestDto requestDto) {
 
         try {
@@ -45,7 +46,7 @@ public class AuthController {
     }
 
     @PostMapping("signup")
-    public ResponseEntity<Void> signup(@RequestBody SignUpRequestDto requestDto) {
+    public ResponseEntity<SimpleResponse> signup(@RequestBody SignUpRequestDto requestDto) {
 
         try {
             AuthorizationResponse header = authService.signup(requestDto);
@@ -65,11 +66,12 @@ public class AuthController {
     }
 
 
-    private ResponseEntity<Void> successAuth(AuthorizationResponse header) {
+    private ResponseEntity<SimpleResponse> successAuth(AuthorizationResponse header) {
+        SimpleResponse response = new SimpleResponse("Authentication successful");
         return ResponseEntity
                 .ok()
                 .header(header.getHeaderName(), header.getHeaderValue())
-                .build();
+                .body(response);
     }
 
 }
